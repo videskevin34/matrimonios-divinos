@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title %}Editar Precios - Admin{% endblock %}
+
+{% block content %}
+<header>
+    <h1>💰 Editar Precios</h1>
+    <p>Actualiza tu tarifas y paquetes</p>
+</header>
+
+<section style="max-width: 900px; margin: 0 auto;">
+    <form method="POST">
+        {% for precio in precios %}
+            <div style="background: #f8fafb; padding: 2rem; margin-bottom: 1.5rem; border-radius: 10px; border-left: 4px solid #667eea;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                    <div>
+                        <div class="form-group">
+                            <label>Nombre del Servicio</label>
+                            <input type="text" name="nombre_{{ precio.id }}" value="{{ precio.nombre }}" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Descripción (ej: Primera consulta)</label>
+                            <input type="text" name="descripcion_{{ precio.id }}" value="{{ precio.descripcion or '' }}">
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="form-group">
+                            <label>Precio ($)</label>
+                            <input type="number" name="monto_{{ precio.id }}" value="{{ precio.monto }}" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Duración (ej: 60 minutos)</label>
+                            <input type="text" name="duracion_{{ precio.id }}" value="{{ precio.duracion or '' }}">
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #ddd;">
+                    <label style="display: flex; align-items: center; cursor: pointer; color: #667eea; font-weight: 600;">
+                        <input type="checkbox" name="destacado_{{ precio.id }}" {% if precio.destacado %}checked{% endif %} style="margin-right: 0.5rem; width: 18px; height: 18px;">
+                        ⭐ Marcar como RECOMENDADO
+                    </label>
+                </div>
+            </div>
+        {% endfor %}
+
+        <div style="text-align: center;">
+            <button type="submit" class="btn btn-primary" style="margin-right: 1rem;">
+                💾 Guardar Cambios
+            </button>
+            <a href="/admin/dashboard" class="btn btn-secondary">Cancelar</a>
+        </div>
+    </form>
+</section>
+
+{% endblock %}

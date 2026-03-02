@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %}Agendar Cita - Matrimonios Divinos{% endblock %}
+
+{% block content %}
+<header>
+    <h1>Agendar una Cita</h1>
+    <p>Completa el formulario para reservar tu consulta</p>
+</header>
+
+<section style="max-width: 600px; margin: 0 auto;">
+    <form method="POST">
+        <div class="form-group">
+            <label for="nombre">Nombre Completo *</label>
+            <input type="text" id="nombre" name="nombre" required placeholder="Tu nombre">
+        </div>
+
+        <div class="form-group">
+            <label for="email">Correo Electrónico *</label>
+            <input type="email" id="email" name="email" required placeholder="tu@email.com">
+        </div>
+
+        <div class="form-group">
+            <label for="telefono">Número de Teléfono *</label>
+            <input type="tel" id="telefono" name="telefono" required placeholder="+58 412 1234567">
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+                <label for="fecha">Fecha Deseada *</label>
+                <input type="date" id="fecha" name="fecha" required>
+            </div>
+
+            <div class="form-group">
+                <label for="hora">Hora Deseada *</label>
+                <input type="time" id="hora" name="hora" required>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="motivo">Motivo de la Consulta *</label>
+            <textarea id="motivo" name="motivo" required placeholder="Cuéntame brevemente los motivos de tu consulta..."></textarea>
+        </div>
+
+        <div style="text-align: center;">
+            <button type="submit" class="btn btn-primary" style="margin-right: 1rem;">
+                Agendar Cita
+            </button>
+            <a href="/" class="btn btn-secondary">Cancelar</a>
+        </div>
+    </form>
+</section>
+
+<section style="margin-top: 2rem; background: #f0f8ff;">
+    <h3 style="color: #3b82f6;">Información Importante</h3>
+    <ul style="margin: 1rem 0; padding-left: 2rem; line-height: 1.8;">
+        <li>Responderé a tu solicitud en las próximas 24 horas</li>
+        <li>Recibirás una confirmación por correo electrónico</li>
+        <li>Si necesitas cambiar la fecha, avísame con anticipación</li>
+        <li>La primera cita es para conocernos y establecer objetivos</li>
+    </ul>
+</section>
+
+{% endblock %}

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Psicología{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="/">Inicio</a></li>
+            <li><a href="/#sobre-mi">Sobre Mí</a></li>
+            <li><a href="/#servicios">Servicios</a></li>
+            <li><a href="/galeria">Galería</a></li>
+            <li><a href="/#precios">Precios</a></li>
+            <li><a href="/#experiencia">Experiencia</a></li>
+            <li><a href="/#testimonios">Testimonios</a></li>
+            <li><a href="/agendar">Agendar Cita</a></li>
+            {% if session.get('admin_id') %}
+                <li><a href="/admin/logout">Cerrar Sesión</a></li>
+            {% else %}
+                <li><a href="/admin/login" style="font-size:0.8rem; opacity:0.7;">🔐</a></li>
+            {% endif %}
+        </ul>
+    </nav>
+
+    <div class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </div>
+
+    <footer>
+        <p>&copy; 2024 Matrimonios Divinos - Psicología Profesional. Todos los derechos reservados.</p>
+    </footer>
+</body>
+</html>

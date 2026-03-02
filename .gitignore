@@ -1,0 +1,23 @@
+# Base de datos
+*.db
+*.sqlite
+__pycache__/
+
+# Entorno virtual
+venv/
+env/
+ENV/
+
+# Archivos de sistema
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.pyc
+*.pyo
+
+# Temporal
+*.tmp
+.env

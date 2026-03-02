@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Login - Matrimonios Divinos{% endblock %}
+
+{% block content %}
+<div class="login-container">
+    <div class="login-card">
+        <h2>🔐 Acceso Administrativo</h2>
+        
+        <form method="POST">
+            <div class="form-group">
+                <label for="username">Usuario</label>
+                <input type="text" id="username" name="username" required placeholder="Ingresa tu usuario">
+            </div>
+
+            <div class="form-group">
+                <label for="password">Contraseña</label>
+                <input type="password" id="password" name="password" required placeholder="Ingresa tu contraseña">
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width: 100%; margin-bottom: 1rem;">
+                Iniciar Sesión
+            </button>
+        </form>
+
+        <hr style="margin: 1.5rem 0; border: none; border-top: 1px solid #ddd;">
+        
+        <p style="text-align: center; color: #666; font-size: 0.9rem;">
+            <strong>Usuario por defecto:</strong><br>
+            Usuario: <code>admin</code><br>
+            Contraseña: <code>123456</code><br>
+            <em>(Cambia esto en el panel)</em>
+        </p>
+    </div>
+</div>
+
+{% endblock %}

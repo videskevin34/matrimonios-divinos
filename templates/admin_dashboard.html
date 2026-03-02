@@ -1,0 +1,242 @@
+{% extends "base.html" %}
+
+{% block title %}Panel Administrativo - Matrimonios Divinos{% endblock %}
+
+{% block content %}
+<div class="admin-header">
+    <h1>Panel Administrativo</h1>
+    <a href="/admin/logout" class="btn btn-danger">Cerrar Sesión</a>
+</div>
+
+<!-- Opciones rápidas -->
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
+    <a href="/admin/editar_servicios" class="btn btn-primary" style="padding: 1rem; text-align: center; text-decoration: none; display: block;">
+        📝 Editar Servicios
+    </a>
+    <a href="/admin/editar_precios" class="btn btn-primary" style="padding: 1rem; text-align: center; text-decoration: none; display: block;">
+        💰 Editar Precios
+    </a>
+</div>
+
+<!-- Sección para subir foto de perfil -->
+<section style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; margin-bottom: 2rem;">
+    <h2 style="color: white; border: none;">📸 Foto de Perfil</h2>
+    <form method="POST" action="/admin/upload_profile" enctype="multipart/form-data" style="max-width: 400px;">
+        <div class="form-group">
+            <label for="file" style="color: white;">Selecciona una imagen:</label>
+            <input type="file" id="file" name="file" accept="image/*" required 
+                   style="background:white; color:#333; padding:0.5rem;">
+        </div>
+        <button type="submit" class="btn btn-success" style="width:100%;">
+            Subir Foto
+        </button>
+    </form>
+    <p style="font-size:0.9rem; opacity:0.8; margin-top:1rem;">
+        Formatos permitidos: PNG, JPG, JPEG, GIF (máx 5MB)
+    </p>
+</section>
+
+<!-- Sección para subir contenido multimedia (galería) -->
+<section style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; margin-bottom: 2rem;">
+    <h2 style="color: white; border: none;">🎬 Subir Contenido a Galería</h2>
+    <form method="POST" action="/admin/upload_media" enctype="multipart/form-data" style="max-width: 600px;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+                <label for="tipo" style="color: white;">Tipo de contenido:</label>
+                <select id="tipo" name="tipo" style="background:white; color:#333; padding:0.7rem; border-radius: 6px;">
+                    <option value="foto">📸 Foto</option>
+                    <option value="video">🎥 Video</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="media_file" style="color: white;">Selecciona archivo:</label>
+                <input type="file" id="media_file" name="file" accept="image/*,video/*" required 
+                       style="background:white; color:#333; padding:0.5rem; border-radius: 6px;">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="descripcion" style="color: white;">Descripción (opcional):</label>
+            <textarea id="descripcion" name="descripcion" 
+                      style="background:white; color:#333; padding:0.7rem; border-radius: 6px; border: none; font-family: inherit;">
+            </textarea>
+        </div>
+
+        <button type="submit" class="btn btn-success" style="width:100%;">
+            Subir a Galería
+        </button>
+    </form>
+    <p style="font-size:0.9rem; opacity:0.8; margin-top:1rem;">
+        Formatos: PNG, JPG, GIF, MP4, WebM, AVI, MOV
+    </p>
+</section>
+
+<!-- Estadísticas -->
+<div class="admin-stats">
+    <div class="stat-card">
+        <h3>{{ citas|length }}</h3>
+        <p>Citas Totales</p>
+    </div>
+    <div class="stat-card">
+        <h3>{{ citas_por_confirmar }}</h3>
+        <p>Citas por Confirmar</p>
+    </div>
+    <div class="stat-card">
+        <h3>{{ testimonios|length }}</h3>
+        <p>Testimonios Pendientes</p>
+    </div>
+    <div class="stat-card">
+        <h3>{{ medios|length }}</h3>
+        <p>Archivos en Galería</p>
+    </div>
+</div>
+
+<!-- Sección de Citas -->
+<section>
+    <h2>📅 Mis Citas Agendadas</h2>
+    {% if citas %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Cliente</th>
+                    <th>Email</th>
+                    <th>Teléfono</th>
+                    <th>Fecha y Hora</th>
+                    <th>Motivo</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for cita in citas %}
+                    <tr>
+                        <td><strong>{{ cita.nombre_cliente }}</strong></td>
+                        <td>{{ cita.email_cliente }}</td>
+                        <td>{{ cita.telefono_cliente }}</td>
+                        <td>{{ cita.fecha_cita }} - {{ cita.hora_cita }}</td>
+                        <td>{{ cita.motivo[:50] }}...</td>
+                        <td>
+                            {% if cita.confirmada %}
+                                <span class="badge badge-success">✓ Confirmada</span>
+                            {% else %}
+                                <span class="badge badge-warning">⏳ Pendiente</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if not cita.confirmada %}
+                                <form method="POST" action="/admin/confirmar_cita/{{ cita.id }}" style="display:inline;">
+                                    <button type="submit" class="btn btn-success" style="padding: 0.4rem 0.8rem; font-size: 0.85rem;">
+                                        Confirmar
+                                    </button>
+                                </form>
+                            {% endif %}
+                            <form method="POST" action="/admin/eliminar_cita/{{ cita.id }}" style="display:inline;">
+                                <button type="submit" class="btn btn-danger" style="padding: 0.4rem 0.8rem; font-size: 0.85rem;" 
+                                        onclick="return confirm('¿Estás seguro de que deseas eliminar esta cita?');">
+                                    Eliminar
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p style="text-align: center; color: #999; padding: 2rem;">
+            No hay citas agendadas aún.
+        </p>
+    {% endif %}
+</section>
+
+<!-- Sección de Testimonios -->
+<section>
+    <h2>⭐ Testimonios Pendientes de Aprobación</h2>
+    {% if testimonios %}
+        <div style="display: grid; gap: 1rem;">
+            {% for testimonio in testimonios %}
+                {% if not testimonio.aprobado %}
+                    <div style="background: #fff9e6; padding: 1.5rem; border-radius: 8px; border-left: 4px solid #ffc107;">
+                        <div style="display: flex; justify-content: space-between; align-items: start;">
+                            <div style="flex: 1;">
+                                <h4 style="color: #333; margin-bottom: 0.5rem;">{{ testimonio.nombre_cliente }}</h4>
+                                <div style="color: #ffc107; margin-bottom: 0.5rem;">
+                                    {{ '⭐' * testimonio.calificacion }}
+                                </div>
+                                <p style="color: #666;">{{ testimonio.contenido }}</p>
+                            </div>
+                            <form method="POST" action="/admin/aprobar_testimonio/{{ testimonio.id }}" style="display:inline;">
+                                <button type="submit" class="btn btn-success">Aprobar</button>
+                            </form>
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+        
+        <hr style="margin: 2rem 0;">
+        <h3 style="color: #667eea;">Testimonios Aprobados</h3>
+        <div style="display: grid; gap: 1rem; margin-top: 1rem;">
+            {% for testimonio in testimonios %}
+                {% if testimonio.aprobado %}
+                    <div class="testimonio-card">
+                        <h4>{{ testimonio.nombre_cliente }}</h4>
+                        <div class="stars">{{ '⭐' * testimonio.calificacion }}</div>
+                        <p>{{ testimonio.contenido }}</p>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    {% else %}
+        <p style="text-align: center; color: #999; padding: 2rem;">
+            No hay testimonios pendientes.
+        </p>
+    {% endif %}
+</section>
+
+<!-- Sección de Galería -->
+<section>
+    <h2>📸 Gestionar Galería</h2>
+    {% if medios %}
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem;">
+            {% for media in medios %}
+                <div style="background: #f8fafb; padding: 1rem; border-radius: 10px; text-align: center; border: 1px solid #e0e6ed;">
+                    {% if media.tipo == 'foto' %}
+                        <img src="{{ url_for('static', filename='media/' + media.filename) }}" 
+                             alt="Foto" style="width: 100%; height: 150px; object-fit: cover; border-radius: 8px; margin-bottom: 1rem;">
+                        <p style="color: #667eea; font-weight: bold; margin-bottom: 0.5rem;">📸 Foto</p>
+                    {% else %}
+                        <div style="background: #333; height: 150px; border-radius: 8px; margin-bottom: 1rem; display: flex; align-items: center; justify-content: center; color: white;">
+                            🎥 Video
+                        </div>
+                        <p style="color: #667eea; font-weight: bold; margin-bottom: 0.5rem;">🎥 Video</p>
+                    {% endif %}
+                    
+                    {% if media.descripcion %}
+                        <p style="color: #666; font-size: 0.9rem; margin-bottom: 1rem;">{{ media.descripcion }}</p>
+                    {% endif %}
+                    
+                    <div style="display: flex; gap: 0.5rem; justify-content: center;">
+                        <form method="POST" action="/admin/toggle_media/{{ media.id }}" style="display:inline;">
+                            <button type="submit" class="btn btn-info" style="padding: 0.5rem 0.8rem; font-size: 0.8rem;">
+                                {% if media.visible %}✓ Visible{% else %}🙈 Oculto{% endif %}
+                            </button>
+                        </form>
+                        <form method="POST" action="/admin/eliminar_media/{{ media.id }}" style="display:inline;">
+                            <button type="submit" class="btn btn-danger" style="padding: 0.5rem 0.8rem; font-size: 0.8rem;"
+                                    onclick="return confirm('¿Estás seguro?');">
+                                Eliminar
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p style="text-align: center; color: #999; padding: 2rem;">
+            No hay contenido en la galería. ¡Sube algunos archivos!
+        </p>
+    {% endif %}
+</section>
+
+{% endblock %}

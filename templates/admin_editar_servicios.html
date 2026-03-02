@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}Editar Servicios - Admin{% endblock %}
+
+{% block content %}
+<header>
+    <h1>✏️ Editar Servicios</h1>
+    <p>Personaliza los servicios que ofreces</p>
+</header>
+
+<section style="max-width: 900px; margin: 0 auto;">
+    <form method="POST">
+        {% for servicio in servicios %}
+            <div style="background: #f8fafb; padding: 2rem; margin-bottom: 1.5rem; border-radius: 10px; border-left: 4px solid #667eea;">
+                <div style="display: grid; grid-template-columns: 100px 1fr; gap: 1rem; align-items: start;">
+                    <div class="form-group">
+                        <label>Icono</label>
+                        <input type="text" name="icono_{{ servicio.id }}" value="{{ servicio.icono }}" maxlength="5" style="font-size: 1.5rem; padding: 0.75rem;">
+                    </div>
+                    <div>
+                        <div class="form-group">
+                            <label>Nombre del Servicio</label>
+                            <input type="text" name="nombre_{{ servicio.id }}" value="{{ servicio.nombre }}" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Descripción</label>
+                            <textarea name="descripcion_{{ servicio.id }}" required style="height: 80px;">{{ servicio.descripcion }}</textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+
+        <div style="text-align: center;">
+            <button type="submit" class="btn btn-primary" style="margin-right: 1rem;">
+                💾 Guardar Cambios
+            </button>
+            <a href="/admin/dashboard" class="btn btn-secondary">Cancelar</a>
+        </div>
+    </form>
+</section>
+
+{% endblock %}
